@@ -28,7 +28,10 @@ class App extends Component {
       list,
     }
 
-    // bind class methods
+    // bind class methods to this (class instance)
+    // done in the constructor because it runs once on instantiation
+    // defining methods using arrow functions achieves the same but without
+    // the statement here!
     this.onDismiss = this.onDismiss.bind(this);
   }
 
@@ -39,6 +42,10 @@ class App extends Component {
   }
 
   render() {
+    // you may define the higher order function outside of the click handler
+    // but it has to live inside of the map callback because it needs
+    // objectID
+
     return (
       <div className="App">
         {this.state.list.map(item =>
