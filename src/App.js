@@ -20,12 +20,27 @@ const list = [
   }
 ]
 
+/*
+// an es5 higher order function
+// see es6 equivalent below
+
+function isSearched(searchTerm) {
+  return function(item) {
+    return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+}
+*/
+
+const isSearched = searchTerm => item =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
       list,
+      searchTerm: ''
     }
 
     // bind class methods to this (class instance)
@@ -33,12 +48,19 @@ class App extends Component {
     // defining methods using arrow functions achieves the same but without
     // the statement here!
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   onDismiss(id) {
     const isNotID = item => item.objectID !== id;
     const updatedList = this.state.list.filter(isNotID);
     this.setState({list: updatedList});
+  }
+
+  onSearchChange(event) {
+    // event => synthetic react event!
+    // console.log(event.target.value);
+    this.setState({ searchTerm: event.target.value });
   }
 
   render() {
@@ -48,7 +70,10 @@ class App extends Component {
 
     return (
       <div className="App">
-        {this.state.list.map(item =>
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item =>
           <div key={item.objectID}>
             <span>
               <a href={item.url}>{item.title}</a>
