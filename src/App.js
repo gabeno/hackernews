@@ -80,13 +80,10 @@ class App extends Component {
   }
 }
 
-const Search = ({ value, onChange, children }) => {
-  return (
-    <form>
-      {children} <input type="text" onChange={onChange} value={value} />
-    </form>
-  );
-}
+const Search = ({ value, onChange, children }) =>
+  <form>
+    {children} <input type="text" onChange={onChange} value={value} />
+  </form>
 
 class Table extends Component {
   render() {
