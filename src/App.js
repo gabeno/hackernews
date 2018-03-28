@@ -80,8 +80,7 @@ class App extends Component {
   }
 }
 
-const Search = (props) => {
-  const { value, onChange, children } = props;
+const Search = ({ value, onChange, children }) => {
   return (
     <form>
       {children} <input type="text" onChange={onChange} value={value} />
