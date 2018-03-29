@@ -18,7 +18,8 @@ class App extends Component {
     this.state = {
       results: null,
       searchKey: '',
-      searchTerm: DEFAULT_QUERY 
+      searchTerm: DEFAULT_QUERY,
+      error: null, 
     }
 
     // bind class methods to this (class instance)
@@ -87,7 +88,7 @@ class App extends Component {
       // once data arrives, internal component state is changed
       // update lifecycle runs rendera again
       .then(result => this.setSearchTopStories(result))
-      .catch(error => error);
+      .catch(error => this.setState({ error}));
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -114,7 +115,8 @@ class App extends Component {
     const {
       searchTerm,
       results,
-      searchKey
+      searchKey,
+      error
     } = this.state;
 
     const page = (
@@ -128,6 +130,8 @@ class App extends Component {
       results[searchKey] &&
       results[searchKey].hits
     ) || [];
+
+    if (error) return <p>Something went wrong!</p>
 
     return (
       <div className="page">
@@ -145,9 +149,12 @@ class App extends Component {
           </Search>
         </div>
 
-        <Table
-          list={list}
-          onDismiss={this.onDismiss} />
+        { error
+          ? <div className="interactions"><p>Something went wrong!</p></div>
+          : <Table
+              list={list}
+              onDismiss={this.onDismiss} />
+        }
       </div>
     );
   }
