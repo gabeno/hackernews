@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 
 const DEFAULT_QUERY = 'Redux';
+const DEFAULT_HPP = '100';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = '?query=';
+const PARAM_PAGE = 'page=';
+const PARAM_HPP = 'hitsPerPage=';
 const url = `${PATH_BASE}${PATH_SEARCH}${PARAM_SEARCH}`;
 
 
@@ -44,11 +47,30 @@ class App extends Component {
   }
 
   setSearchTopStories(result) {
-    this.setState({ result });
+    const { hits, page } = result;
+    
+    // when page=0 its a new search from either
+    // onSearchSubmit() or componentDidMount() and hits are empty
+    // otherwise more data requested and old hits alreadt stored
+    // in the local state
+    const oldHits = page !== 0
+      ? this.state.result.hits
+      : [];
+    
+    // merge old and new hits
+    const updatedHits = [
+      ...oldHits,
+      ...hits
+    ];
+
+    // set merged hits and page in the local component state
+    this.setState({
+      result: { hits: updatedHits, page }
+    });
   }
 
-  fetchSearchTopStories(searchTerm) {
-    fetch(`${url}${searchTerm}`)
+  fetchSearchTopStories(searchTerm, page=0) {
+    fetch(`${url}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(response => response.json())
       // once data arrives, internal component state is changed
       // update lifecycle runs rendera again
@@ -68,17 +90,19 @@ class App extends Component {
   }
 
   render() {
-    // you may define the higher order function outside of the click handler
-    // but it has to live inside of the map callback because it needs
-    // objectID
-
     // destructure for better readability
-    console.log(this.state);
     const { searchTerm, result } = this.state;
+    const page = (result && result.page) || 0;
+
+    console.log(this.state);
 
     return (
       <div className="page">
         <div className="interactions">
+          <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
+            More
+          </Button>
+
           <Search
             value={searchTerm}
             onChange={this.onSearchChange}
