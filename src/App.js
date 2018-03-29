@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 
 const DEFAULT_QUERY = 'Redux';
@@ -83,11 +84,10 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page=0) {
-    fetch(`${url}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-      .then(response => response.json())
+    axios(`${url}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       // once data arrives, internal component state is changed
       // update lifecycle runs rendera again
-      .then(result => this.setSearchTopStories(result))
+      .then(result => this.setSearchTopStories(result.data))
       .catch(error => this.setState({ error}));
   }
 
