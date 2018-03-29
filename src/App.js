@@ -1,24 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 
-const list = [
-  {
-    title: 'React',
-    url: 'https://facebook.github.io/react/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: 'Redux',
-    url: 'https://github.com/reactjs/redux',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-  }
-]
+const DEFAULT_QUERY = 'Redux';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = '?query=';
+const url = `${PATH_BASE}${PATH_SEARCH}${PARAM_SEARCH}`;
 
 /*
 // an es5 higher order function
@@ -39,8 +26,8 @@ class App extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      list,
-      searchTerm: ''
+      result: null,
+      searchTerm: DEFAULT_QUERY 
     }
 
     // bind class methods to this (class instance)
@@ -49,6 +36,7 @@ class App extends Component {
     // the statement here!
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.setSearchTopStories = this.setSearchTopStories.bind(this);
   }
 
   onDismiss(id) {
@@ -63,20 +51,39 @@ class App extends Component {
     this.setState({ searchTerm: event.target.value });
   }
 
+  setSearchTopStories(result) {
+    this.setState({ result });
+  }
+
+  componentDidMount() {
+    const { searchTerm } = this.state;
+    fetch(`${url}${searchTerm}`)
+      .then(response => response.json())
+      // once data arrives, internal component state is changed
+      // update lifecycle runs rendera again
+      .then(result => this.setSearchTopStories(result))
+      .catch(error => error);
+  }
+
   render() {
     // you may define the higher order function outside of the click handler
     // but it has to live inside of the map callback because it needs
     // objectID
 
     // destructure for better readability
-    const { searchTerm, list } = this.state;
+    console.log(this.state);
+    const { searchTerm, result } = this.state;
+
+    // prevent component from displaying anything because result
+    // in the local state is null
+    if (!result) return null;
 
     return (
       <div className="page">
         <div className="interactions">
           <Search value={searchTerm} onChange={this.onSearchChange}>Search</Search>
         </div>
-        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+        <Table list={result.hits} pattern={searchTerm} onDismiss={this.onDismiss} />
       </div>
     );
   }
@@ -110,5 +117,78 @@ const Button = ({ onClick, className = '', children }) =>
   <button onClick={onClick} className={className} type="button">
     {children}
   </button>
+
+
+/*
+class Component {
+  // REF: https://reactjs.org/docs/react-component.html
+  // will - before something happens
+  // did - after something happens
+
+  // *****************************
+  //      CLASS PROPERTIES 
+  // *****************************
+  
+  defaultProps
+
+  displayName
+
+  // *****************************
+  //      INSTANCE PROPERTIES 
+  // *****************************
+
+  props
+
+  state
+
+  // *****************************
+  //         MOUNTING
+  // *****************************
+  
+  // called during mounting - when an instance of the component
+  // is created and inserted into the DOM
+  constructor() {}
+
+  // called before render
+  componentWillMount() {}
+
+  // called during mounting too and also when component updates - state 
+  // or props change
+  render() {}
+
+  // called after render
+  componentDidMount() {}
+
+  // *****************************
+  //        UPDATING 
+  // *****************************
+
+  componentWillReceiveProps() {}
+
+  shouldComponentUpdate() {}
+
+  componentWillUpdate() {}
+
+  render() {}
+
+  componentDidUpdate() {}
+
+  // *****************************
+  //       UNMOUNTING 
+  // *****************************
+
+  componentWillUnmount() {}
+
+  // *****************************
+  //       OTHER APIs
+  // *****************************
+
+  setState() {}
+
+  forceUpdate() {}
+
+
+}
+*/
 
 export default App;
