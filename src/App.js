@@ -77,16 +77,18 @@ class App extends Component {
     console.log(this.state);
     const { searchTerm, result } = this.state;
 
-    // prevent component from displaying anything because result
-    // in the local state is null
-    if (!result) return null;
-
     return (
       <div className="page">
         <div className="interactions">
           <Search value={searchTerm} onChange={this.onSearchChange}>Search</Search>
         </div>
-        <Table list={result.hits} pattern={searchTerm} onDismiss={this.onDismiss} />
+        { result
+          ? <Table
+              list={result.hits}
+              pattern={searchTerm}
+              onDismiss={this.onDismiss} />
+          : null
+        }
       </div>
     );
   }
