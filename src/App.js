@@ -263,4 +263,34 @@ class Component {
 }
 */
 
+/**
+ * src/
+  index.js
+  index.css
+  constants/
+    index.js
+  components/
+    App/
+      index.js
+      test.js
+      index.css
+    Button/
+      index.js
+      test.js
+      index.css
+    Table/
+      index.js
+      test.js
+      index.css
+    Search/
+      index.js
+      test.js
+      index.css
+ */
 export default App;
+
+export {
+  Button,
+  Table,
+  Search
+};
