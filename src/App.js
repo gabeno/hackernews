@@ -161,11 +161,23 @@ class App extends Component {
   }
 }
 
-const Search = ({ value, onChange, children, onSubmit }) =>
-  <form onSubmit={onSubmit}>
-    <input type="text" onChange={onChange} value={value} />
-    <button type="submit">{children}</button>
-  </form>
+class Search extends Component {
+  render() {
+    const {
+      value,
+      onChange,
+      children,
+      onSubmit,
+    } = this.props;
+
+    return (
+      <form onSubmit={onSubmit}>
+        <input type="text" onChange={onChange} value={value} />
+        <button type="submit">{children}</button>
+      </form>
+    );
+  }
+}
 
 Search.propTypes = {
   value: PropTypes.string.isRequired,
