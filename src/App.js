@@ -182,7 +182,7 @@ class Search extends Component {
           type="text"
           onChange={onChange}
           value={value}
-          ref={(node) => { this.input = node; }}
+          ref={node => { this.input = node; }}
          />
         <button type="submit">{children}</button>
       </form>
