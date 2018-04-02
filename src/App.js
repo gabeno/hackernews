@@ -22,6 +22,7 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       error: null, 
+      isLoading: false, 
     }
 
     // bind class methods to this (class instance)
@@ -80,11 +81,13 @@ class App extends Component {
       results: {
         ...results,
         [searchKey]: {hits: updatedHits, page}
-      }
+      },
+      isLoading: false
     });
   }
 
   fetchSearchTopStories(searchTerm, page=0) {
+    this.setState({ isLoading: true });
     axios(`${url}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       // once data arrives, internal component state is changed
       // update lifecycle runs rendera again
@@ -117,7 +120,8 @@ class App extends Component {
       searchTerm,
       results,
       searchKey,
-      error
+      error,
+      isLoading
     } = this.state;
 
     const page = (
@@ -137,9 +141,12 @@ class App extends Component {
     return (
       <div className="page">
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-            More
-          </Button>
+          { isLoading
+            ? <Loading />
+            : <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+                More
+              </Button>
+          }
 
           <Search
             value={searchTerm}
@@ -220,6 +227,9 @@ Button.propTypes = {
 Button.defaultProps = {
   className: '',
 };
+
+const Loading = () =>
+  <div>Loading ...</div>
 
 /*
 class Component {
@@ -322,5 +332,6 @@ export default App;
 export {
   Button,
   Table,
-  Search
+  Search,
+  Loading
 };
