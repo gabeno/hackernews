@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/fontawesome-free-solid';
 import './App.css';
 
 const DEFAULT_QUERY = 'Redux';
@@ -229,7 +231,9 @@ Button.defaultProps = {
 };
 
 const Loading = () =>
-  <div>Loading ...</div>
+  <div>
+    <FontAwesomeIcon icon={ faSpinner } pulse />
+  </div>
 
 /*
 class Component {
