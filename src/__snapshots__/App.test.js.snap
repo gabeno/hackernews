@@ -7,13 +7,9 @@ exports[`App has a valid snapshot 1`] = `
   <div
     className="interactions"
   >
-    <button
-      className=""
-      onClick={[Function]}
-      type="button"
-    >
-      More
-    </button>
+    <div>
+      Loading ...
+    </div>
     <form
       onSubmit={[Function]}
     >
@@ -38,21 +34,27 @@ exports[`App has a valid snapshot 1`] = `
 exports[`Button has a valid snapshot 1`] = `
 <button
   className=""
-  onClick={undefined}
+  onClick={[Function]}
   type="button"
 >
   Give me more
 </button>
 `;
 
+exports[`Loading has a valid snapshot 1`] = `
+<div>
+  Loading ...
+</div>
+`;
+
 exports[`Search has a valid snapshot 1`] = `
 <form
-  onSubmit={undefined}
+  onSubmit={[Function]}
 >
   <input
-    onChange={undefined}
+    onChange={[Function]}
     type="text"
-    value={undefined}
+    value="something"
   />
   <button
     type="submit"
@@ -89,7 +91,7 @@ exports[`Table has a valid snapshot 1`] = `
         }
       }
     >
-      1
+      a
     </span>
     <span
       style={
@@ -148,7 +150,7 @@ exports[`Table has a valid snapshot 1`] = `
         }
       }
     >
-      2
+      b
     </span>
     <span
       style={
