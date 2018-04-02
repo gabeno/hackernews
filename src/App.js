@@ -143,12 +143,11 @@ class App extends Component {
     return (
       <div className="page">
         <div className="interactions">
-          { isLoading
-            ? <Loading />
-            : <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-                More
-              </Button>
-          }
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+            More
+          </ButtonWithLoading>
 
           <Search
             value={searchTerm}
@@ -234,6 +233,13 @@ const Loading = () =>
   <div>
     <FontAwesomeIcon icon={ faSpinner } pulse />
   </div>
+
+const withLoading = (Component) => ({ isLoading, ...rest }) =>
+  isLoading
+    ? <Loading />
+    : <Component { ...rest } />
+
+const ButtonWithLoading = withLoading(Button);
 
 /*
 class Component {
