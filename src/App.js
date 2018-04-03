@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { sortBy } from 'lodash';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/fontawesome-free-solid';
 import './App.css';
@@ -13,6 +14,13 @@ const PARAM_SEARCH = '?query=';
 const PARAM_PAGE = 'page=';
 const PARAM_HPP = 'hitsPerPage=';
 const url = `${PATH_BASE}${PATH_SEARCH}${PARAM_SEARCH}`;
+const SORT = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, 'title'),
+  AUTHOR: list => sortBy(list, 'author'),
+  COMMENTS: list => sortBy(list, 'num_comments').reverse(),
+  POINTS: list => sortBy(list, 'points').reverse(),
+};
 
 
 class App extends Component {
@@ -25,6 +33,7 @@ class App extends Component {
       searchTerm: DEFAULT_QUERY,
       error: null, 
       isLoading: false, 
+      sortKey: 'NONE',
     }
 
     // bind class methods to this (class instance)
@@ -37,6 +46,7 @@ class App extends Component {
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+    this.onSort = this.onSort.bind(this);
   }
 
   onDismiss(id) {
@@ -110,6 +120,10 @@ class App extends Component {
     event.preventDefault();
   }
 
+  onSort(sortKey) {
+    this.setState({ sortKey });
+  }
+
   componentDidMount() {
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
@@ -123,7 +137,8 @@ class App extends Component {
       results,
       searchKey,
       error,
-      isLoading
+      isLoading,
+      sortKey,
     } = this.state;
 
     const page = (
@@ -162,7 +177,9 @@ class App extends Component {
           ? <div className="interactions"><p>Something went wrong!</p></div>
           : <Table
               list={list}
-              onDismiss={this.onDismiss} />
+              onDismiss={this.onDismiss}
+              sortKey={sortKey}
+              onSort={this.onSort} />
         }
       </div>
     );
@@ -182,9 +199,26 @@ Search.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-const Table = ({ list, onDismiss }) =>
+const Table = ({ list, sortKey, onDismiss, onSort }) =>
   <div className="table">
-    {list.map(item =>
+    <div className="table-header">
+      <span style={{ width: '40%' }}>
+        <Sort sortKey={'TITLE'} onSort={onSort}>Title</Sort>
+      </span>
+      <span style={{ width: '30%' }}>
+        <Sort sortKey={'AUTHOR'} onSort={onSort}>Author</Sort>
+      </span>
+      <span style={{ width: '10%' }}>
+        <Sort sortKey={'COMMENTS'} onSort={onSort}>Comments</Sort>
+      </span>
+      <span style={{ width: '10%' }}>
+        <Sort sortKey={'POINTS'} onSort={onSort}>Points</Sort>
+      </span>
+      <span style={{ width: '10%' }}>
+        Archive
+      </span>
+    </div>
+    {SORT[sortKey](list).map(item =>
       <div key={item.objectID} className="table-row">
         <span style={{ width: '40%' }}>
           <a href={item.url}>{item.title}</a>
@@ -240,6 +274,13 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
     : <Component { ...rest } />
 
 const ButtonWithLoading = withLoading(Button);
+
+const Sort = ({ sortKey, onSort, children }) =>
+  <Button
+    onClick={() => onSort(sortKey)}
+    className="button-inline">
+    {children}
+  </Button>
 
 /*
 class Component {
