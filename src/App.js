@@ -35,9 +35,7 @@ class App extends Component {
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false,
-      sortKey: "NONE",
-      isSortReverse: false
+      isLoading: false
     };
 
     // bind class methods to this (class instance)
@@ -50,7 +48,6 @@ class App extends Component {
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
-    this.onSort = this.onSort.bind(this);
   }
 
   onDismiss(id) {
@@ -120,11 +117,6 @@ class App extends Component {
     event.preventDefault();
   }
 
-  onSort(sortKey) {
-    const isSortReverse = this.state.sortKey === sortKey && !this.isSortReverse;
-    this.setState({ sortKey, isSortReverse });
-  }
-
   componentDidMount() {
     const { searchTerm } = this.state;
     this.setState({ searchKey: searchTerm });
@@ -133,15 +125,7 @@ class App extends Component {
 
   render() {
     // destructure for better readability
-    const {
-      searchTerm,
-      results,
-      searchKey,
-      error,
-      isLoading,
-      sortKey,
-      isSortReverse
-    } = this.state;
+    const { searchTerm, results, searchKey, error, isLoading } = this.state;
 
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
@@ -175,13 +159,7 @@ class App extends Component {
             <p>Something went wrong!</p>
           </div>
         ) : (
-          <Table
-            list={list}
-            onDismiss={this.onDismiss}
-            sortKey={sortKey}
-            onSort={this.onSort}
-            isSortReverse={isSortReverse}
-          />
+          <Table list={list} onDismiss={this.onDismiss} />
         )}
       </div>
     );
@@ -203,8 +181,26 @@ Search.propTypes = {
 };
 
 class Table extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sortKey: "NONE",
+      isSortReverse: false
+    };
+
+    this.onSort = this.onSort.bind(this);
+  }
+
+  onSort(sortKey) {
+    const isSortReverse = this.state.sortKey === sortKey && !this.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
+  }
+
   render() {
-    const { list, sortKey, isSortReverse, onDismiss, onSort } = this.props;
+    const { list, onDismiss } = this.props;
+    const { sortKey, isSortReverse } = this.state;
+
     const sortedList = SORT[sortKey](list);
     const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
     const angleIcon = isSortReverse ? faAngleUp : faAngleDown;
@@ -212,22 +208,38 @@ class Table extends Component {
       <div className="table">
         <div className="table-header">
           <span style={{ width: "40%" }}>
-            <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"TITLE"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Title <FontAwesomeIcon icon={angleIcon} />
             </Sort>
           </span>
           <span style={{ width: "30%" }}>
-            <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"AUTHOR"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Author <FontAwesomeIcon icon={angleIcon} />
             </Sort>
           </span>
           <span style={{ width: "10%" }}>
-            <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"COMMENTS"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Comments <FontAwesomeIcon icon={angleIcon} />
             </Sort>
           </span>
           <span style={{ width: "10%" }}>
-            <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
+            <Sort
+              sortKey={"POINTS"}
+              onSort={this.onSort}
+              activeSortKey={sortKey}
+            >
               Points <FontAwesomeIcon icon={angleIcon} />
             </Sort>
           </span>
