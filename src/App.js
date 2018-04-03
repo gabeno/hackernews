@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { sortBy } from "lodash";
+import classNames from "classnames";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/fontawesome-free-solid";
+import {
+  faSpinner,
+  faAngleDown,
+  faAngleUp
+} from "@fortawesome/fontawesome-free-solid";
 import "./App.css";
 
 const DEFAULT_QUERY = "Redux";
@@ -200,28 +205,29 @@ Search.propTypes = {
 const Table = ({ list, sortKey, isSortReverse, onDismiss, onSort }) => {
   const sortedList = SORT[sortKey](list);
   const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
+  const angleIcon = isSortReverse ? faAngleUp : faAngleDown;
 
   return (
     <div className="table">
       <div className="table-header">
         <span style={{ width: "40%" }}>
           <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
-            Title
+            Title <FontAwesomeIcon icon={angleIcon} />
           </Sort>
         </span>
         <span style={{ width: "30%" }}>
           <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
-            Author
+            Author <FontAwesomeIcon icon={angleIcon} />
           </Sort>
         </span>
         <span style={{ width: "10%" }}>
           <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
-            Comments
+            Comments <FontAwesomeIcon icon={angleIcon} />
           </Sort>
         </span>
         <span style={{ width: "10%" }}>
           <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
-            Points
+            Points <FontAwesomeIcon icon={angleIcon} />
           </Sort>
         </span>
         <span style={{ width: "10%" }}>Archive</span>
@@ -258,7 +264,10 @@ Table.propTypes = {
       points: PropTypes.number
     })
   ).isRequired,
-  onDismiss: PropTypes.func.isRequired
+  onDismiss: PropTypes.func.isRequired,
+  onSort: PropTypes.func,
+  sortKey: PropTypes.string,
+  isSortReverse: PropTypes.bool
 };
 
 const Button = ({ onClick, className, children }) => (
@@ -289,12 +298,12 @@ const withLoading = Component => ({ isLoading, ...rest }) =>
 const ButtonWithLoading = withLoading(Button);
 
 const Sort = ({ sortKey, onSort, activeSortKey, children }) => {
-  const sortClass = ["button-inline"];
-
-  if (sortKey === activeSortKey) sortClass.push("button-active");
+  const sortClass = classNames("button-inline", {
+    "button-active": sortKey === activeSortKey
+  });
 
   return (
-    <Button onClick={() => onSort(sortKey)} className={sortClass.join(" ")}>
+    <Button onClick={() => onSort(sortKey)} className={sortClass}>
       {children}
     </Button>
   );
