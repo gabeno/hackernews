@@ -27,6 +27,28 @@ const SORT = {
   POINTS: list => sortBy(list, "points").reverse()
 };
 
+const updateSearchTopStories = (hits, page) => prevState => {
+  const { searchKey, results } = this.state;
+
+  // when page=0 its a new search from either
+  // onSearchSubmit() or componentDidMount() and hits are empty
+  // otherwise more data requested and old hits alreadt stored
+  // in the local state
+  const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
+
+  // merge old and new hits
+  const updatedHits = [...oldHits, ...hits];
+
+  // set merged hits and page in the local component state
+  return {
+    results: {
+      ...results,
+      [searchKey]: { hits: updatedHits, page }
+    },
+    isLoading: false
+  };
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -73,29 +95,7 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-
-    this.setState(prevState => {
-      const { searchKey, results } = this.state;
-
-      // when page=0 its a new search from either
-      // onSearchSubmit() or componentDidMount() and hits are empty
-      // otherwise more data requested and old hits alreadt stored
-      // in the local state
-      const oldHits =
-        results && results[searchKey] ? results[searchKey].hits : [];
-
-      // merge old and new hits
-      const updatedHits = [...oldHits, ...hits];
-
-      // set merged hits and page in the local component state
-      this.setState({
-        results: {
-          ...results,
-          [searchKey]: { hits: updatedHits, page }
-        },
-        isLoading: false
-      });
-    });
+    this.setState(updateSearchTopStories(hits, page));
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
