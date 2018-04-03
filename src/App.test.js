@@ -4,6 +4,7 @@ import renderer from "react-test-renderer";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import App, { Search, Button, Table, Loading } from "./App";
+import updateSearchTopStories from "./utils/update_search_stories_state";
 
 Enzyme.configure({ adapter: new Adapter() });
 

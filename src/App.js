@@ -10,6 +10,7 @@ import {
   faAngleUp
 } from "@fortawesome/fontawesome-free-solid";
 import "./App.css";
+import updateSearchTopStories from "./utils/update_search_stories_state";
 
 const DEFAULT_QUERY = "Redux";
 const DEFAULT_HPP = "100";
@@ -25,28 +26,6 @@ const SORT = {
   AUTHOR: list => sortBy(list, "author"),
   COMMENTS: list => sortBy(list, "num_comments").reverse(),
   POINTS: list => sortBy(list, "points").reverse()
-};
-
-const updateSearchTopStories = (hits, page) => prevState => {
-  const { searchKey, results } = this.state;
-
-  // when page=0 its a new search from either
-  // onSearchSubmit() or componentDidMount() and hits are empty
-  // otherwise more data requested and old hits alreadt stored
-  // in the local state
-  const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
-
-  // merge old and new hits
-  const updatedHits = [...oldHits, ...hits];
-
-  // set merged hits and page in the local component state
-  return {
-    results: {
-      ...results,
-      [searchKey]: { hits: updatedHits, page }
-    },
-    isLoading: false
-  };
 };
 
 class App extends Component {
