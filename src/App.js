@@ -9,8 +9,8 @@ import {
   faAngleDown,
   faAngleUp
 } from "@fortawesome/fontawesome-free-solid";
-import "./App.css";
 import updateSearchTopStories from "./utils/update_search_stories_state";
+import "./App.css";
 
 const DEFAULT_QUERY = "Redux";
 const DEFAULT_HPP = "100";

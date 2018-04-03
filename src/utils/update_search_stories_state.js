@@ -13,6 +13,7 @@ const updateSearchTopStories = (hits, page) => prevState => {
   const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
 
   // merge old and new hits
+  console.log(hits);
   const updatedHits = [...oldHits, ...hits];
 
   // set merged hits and page in the local component state

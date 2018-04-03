@@ -111,3 +111,22 @@ describe("Loading", () => {
     expect(tree).toMatchSnapshot();
   });
 });
+
+/**
+describe("helper: updateSearchStoriesState", () => {
+  it("returns more hits when page not 0", () => {
+    const searchKey = "Redux";
+
+    const res = {
+      hits: [
+        { title: 1, author: "a", num_comments: 1, points: 2, objectID: "y" }
+      ],
+      page: 0
+    };
+
+    const update = updateSearchTopStories({})(res);
+
+    expect(update[searchKey].hits.length).toBe(2);
+  });
+});
+ */
